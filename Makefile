@@ -6,7 +6,7 @@
 #    By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/25 18:37:43 by ineumann          #+#    #+#              #
-#    Updated: 2022/04/19 17:38:44 by ineumann         ###   ########.fr        #
+#    Updated: 2022/04/20 19:49:22 by ineumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ CC				=	@g++ -g -Wall -Wextra -Werror -std=c++98 #-fsanitize=address
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(SRCS) -o $(NAME)
+	$(CC) $(SRCS) # -o $(NAME)
 
 clean:
 	@rm -f $(OBJS)

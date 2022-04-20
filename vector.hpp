@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/19 19:55:16 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/20 19:48:13 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@
 #include <iterator>
 #include <stdexcept>
 #include <cmath>
+#include "vector-utils.hpp"
 
 namespace ft
 {
+    template<class T, class Alloc = std::allocator<T> >
     class vector
     {
         public:
@@ -252,10 +254,39 @@ namespace ft
             pointer             _array;
    
     }; // class vector
-    // -----------------------------templates-----------------------------
+    // -----------------------------non-member function overloads-----------------------------
     template <class T, class Alloc>
-        bool operator == (const vector<T, Alloc>& lhs, const vector<T,Alloc>& rhs) {
-            return (lhs.size() == rhs.size() && ft::equakl);
+        bool operator == (const vector<T, Alloc>& first, const vector<T,Alloc>& second) {
+            return (first.size() == second.size() && ft::equal(first.begin(), first.end(), second.end()));
+        }
+
+    template <class T, class Alloc>
+        bool operator != (const vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+            return (!(first == second));
+        }
+    
+    template <class T, class Alloc>
+        bool operator < (cont vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+            return ft:smallerthan(first.begin(), first.end(), second.begin(), rhx.end());
+        }
+
+    template <class T, class Alloc>
+        bool operator<= (const vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+            return (!(second < first));
+        }
+    template <class T, class Alloc>
+        bool operator > (cont vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+            return (second < first);
+        }
+    template <class T, class Alloc>
+        bool operator>= (const vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+            return (!(first < second));
+        }
+    template <class T, class Alloc>
+        void swap (vector<T, Alloc>& first, vector<T, Alloc>& second) {
+            vector<T, Alloc> tmp(first);
+            first = second;
+            second = tmp;
         }
 }
 
