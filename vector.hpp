@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/20 19:48:13 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/21 19:37:04 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <string>
 #include <iterator>
 #include <stdexcept>
+#include <type_traits>
 #include <cmath>
 #include "vector-utils.hpp"
 
@@ -33,138 +34,150 @@ namespace ft
         typedef const T&                                    const_reference;
         typedef T*                                          pointer;
         typedef const T*                                    const_pointer;
-        typedef syze_t                                      size_type;
+        typedef size_t                                      size_type;
         typedef long int                                    difference_type;
         typedef RandomAccessIterator<T, T*, T&>             iterator;
         typedef RandomAccessIterator<T, const T*, const T&> const_iterator; 
         typedef ReverseRAI<iterator>                        reverse_iterator;
         typedef ReverseRAI<const_iterator>                  const_reverse_iterator;
 
+    // -----------------------------variables-----------------------------
+        private:
+            allocator_type	    _alloc;
+            size_type           _size;
+            size_type           _max_size;
+            pointer             _array;
+
+        public:
     // -----------------------------Constructors destructor & copy-----------------------------
             explicit vector( const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _size(0), _max_size(0) {
             }
 
-            explicit vector( size_type n, const value_type& cal = value_type(), const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _size(n), _max_size(n) {
-                _array = new value_type[n]();
+            explicit vector( size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _size(n), _max_size(n) {
+                this->_array = new value_type[n]();
                 for (size_type i = 0; i < n; i++)
-                    _array[i] = val;
+                    this->_array[i] = val;
             }
             template <typename InputIterator>
             vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-                    typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0) : size(0), _alloc(alloc){
+                    typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) : _size(0), _alloc(alloc){
                     
                     InputIterator tmp(first);
                     while (tmp++ != last)
-                        _size++;
-                    _max_size = _size;
-                    _array = _alloc.allocate(_max_size);
+                        this->_size++;
+                    this->_max_size = this->_size;
+                    this->_array = this->_alloc.allocate(this->_max_size);
                     for (int i = 0; first != last; ++first, ++i)
-                        _array[i] = *first;
+                        this->_array[i] = *first;
             }
             explicit vector( const vector& x ) : _alloc(x._alloc), _size(0), _max_size(0), _array(0) {
                 *this = x;
             }
             vector &operator=(const vector & x) {
-                delete[] _array;
-                _array = new value_type[x._max_size];
-                _max_size = x._max_size;
-                _size = 0;
+                delete[] this->_array;
+                this->_array = new value_type[x._max_size];
+                this->_max_size = x._max_size;
+                this->_size = 0;
                 assign(x.begin(), x.end());
 			    return *this;
             }
             ~vector( void )   {
-                delete[] _array;
+                delete[] this->_array;
             }
     // -----------------------------Iterators-----------------------------
-			iterator	begin(void)	    {
-				return iterator(_array);
+			iterator	begin(void) {
+				return iterator(this->_array);
 			}
-			iterator	end(void)       {
-				return iterator(_array + _size);
+			iterator	end(void) {
+				return iterator(this->_array + this->_size);
 			}
-			const_iterator	begin(void)	{
-				return const_iterator(_array);
+			const_iterator	begin(void)	const {
+				return const_iterator(this->_array);
 			}
-			const_iterator	end(void)	{
-				return const_iterator(_array + _size);
+			const_iterator	end(void) const {
+				return const_iterator(this->_array + this->_size);
 			}
-            reverse_iterator rbegin()   {
-                return reverse_iterator(_array + _size - 1);
+            reverse_iterator rbegin() {
+                return reverse_iterator(this->_array + this->_size - 1);
             }
-            reverse_iterator rend()      {
-                return reverse_iterator(_array - 1);
+            reverse_iterator rend() {
+                return reverse_iterator(this->_array - 1);
             }
-            const_reverse_iterator rbegin()   {
-                return const_reverse_iterator(_array + _size - 1);
+            const_reverse_iterator rbegin() const {
+                return const_reverse_iterator(this->_array + this->_size - 1);
             }
-            const_reverse_iterator rend()       {
-                return const_reverse_iterator(_array - 1);
+            const_reverse_iterator rend() const {
+                return const_reverse_iterator(this->_array - 1);
             }
     // -----------------------------Capacity-----------------------------
             size_type  size() const {
-                return _size;
+                return this->_size;
             }
             size_type   max_size() const {
-                return _alloc.max_size();
+                return this->_alloc.max_size();
             }
             void        resize( size_type n, value_type val = value_type() ) {
-                if (n > _max_size)
+                if (n > this->_max_size)
                     reserve(n);
-                while (n > _size)
+                while (n > this->_size)
                     push_back(val);
-                while (n < _size)
+                while (n < this->_size)
                     pop_back();
             }
             size_type   capacity() const    {
-                return: _max_size;
+                return this->_max_size;
             }
             size_type   empty() const   {
-                return (!(_size))
+                return (!(this->_size));
             }
             void    reserve(size_type n) {
-                if (n <= _max_size)
+                if (n <= this->_max_size)
                     return ;
-                n = ft::max(n, this->_max_size * 2);
+                n = std::max(n, this->_max_size * 2);
                 pointer tmp = new value_type[n];
-                for (size_type i = 0; i < _size; i++)
-                    tmp[i] = _array[i];
+                for (size_type i = 0; i < this->_size; i++)
+                    tmp[i] = this->_array[i];
                 this->~vector();
-                _array = tmp;
-                _max_size = n;
+                this->_array = tmp;
+                this->_max_size = n;
             }
     // -----------------------------Element Access-----------------------------
             reference   operator[](size_type n) {
-                return _array[n];
+                return this->_array[n];
             }
             reference   operator[](size_type n) const {
-                return _array[n];
+                return this->_array[n];
             }
             reference   at(size_type n) {
-                if (n >= _size)
+                if (n >= this->_size)
                     throw std::out_of_range("out of range");
-                return _array[n];
+                return this->_array[n];
             }
             reference   at(size_type n) const {
-                if (n >= _size)
+                if (n >= this->_size)
                     throw std::out_of_range("out of range");
-                return _array[n];
+                return this->_array[n];
             }
             reference   front() {
-                return _array[0];
+                return this->_array[0];
             }
             reference   front() const {
-                return _array[0];
+                return this->_array[0];
             }
             reference   back()  {
-                return _array[_size - 1];
+                return this->_array[this->_size - 1];
             }
             reference   back() const    {
-                return _array[_size - 1];
+                return this->_array[this->_size - 1];
             }
     // -----------------------------Modifiers-----------------------------
+            void clear() {
+                while (this->_size)
+                    pop_back();
+            }
             template <class InputIterator>
             void    assign(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-                    typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0) {
+                    typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {
                 clear();
                 if (first != last)  {
                     push_back(*first);
@@ -179,52 +192,51 @@ namespace ft
                 }
             }
             void    push_back(const value_type& val) {
-                if (_size == 0)
+                if (this->_size == 0)
                     reserve(1);
                 else
-                    reserve(_max_size * 2);
-                _array[_size] = val;
-                _size++;
+                    reserve(this->_max_size * 2);
+                this->_array[this->_size] = val;
+                this->_size++;
             }
             void    pop_back()  {
-                _size--;
+                this->_size--;
             }
                 iterator    insert(iterator position, const value_type& val)   {
                     difference_type index = position - begin();
                     insert (position, 1, val);
-                    return iterator(&_array[index]);
+                    return iterator(&this->_array[index]);
             }
             void    insert (iterator position, size_type n, const value_type& val) {
                 vector tmp(position, end());
-                    _size -= tmp.size();
+                    this->_size -= tmp.size();
                 while(n) {
                         push_back(val);
                         n--;
                 }
                 for (iterator it = tmp.begin(); it != tmp.end(); it++) {
-                        push_back(*it);
+                        push_back(it);
                 }
                 tmp->~vector();
             }
             template <class InputIterator>
-            void    insert (iterator position, InputIterator first, InputIterator last
-                typename ft::check_type<typename ft::iterator_traits<InputIterator>::iterator_category>::type* = 0) {
+            void    insert (iterator position, InputIterator first, InputIterator last,
+                typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {
                 vector tmp(position, end());
-                _size -= tmp.size();
+                this->_size -= tmp.size();
                 while (first != last) {
                     push_back(*first);
                     ++first;
                 }
                 for (iterator it = tmp.begin(); it != tmp.end(); it++)
-                    push_back(*it);
+                    push_back(it);
                 tmp->~vector();
                 }
-            }
             iterator erase(iterator position) {
                 iterator out(position);
                 while (position != end() - 1)
-                    position = *(++position);
-                --_size;
+                    *position = *(++position);
+                --this->_size;
                 return out;
             }
             iterator erase(iterator first, iterator last) {
@@ -234,7 +246,7 @@ namespace ft
                     *first++ = *last++;
                     minus++;
                 }
-                _size -= minus;
+                this->_size -= minus;
                 return out;
             }
             void swap (vector& x) {
@@ -242,17 +254,7 @@ namespace ft
                 x = *this;
                 *this = tmp;
             }
-            void clear() {
-                while (_size)
-                    pop_back();
-            }
-    // -----------------------------variables-----------------------------
-        private:
-            allocator_type	    _alloc;
-            size_type           _size;
-            size_type           _max_size;
-            pointer             _array;
-   
+        };
     }; // class vector
     // -----------------------------non-member function overloads-----------------------------
     template <class T, class Alloc>
@@ -266,8 +268,8 @@ namespace ft
         }
     
     template <class T, class Alloc>
-        bool operator < (cont vector<T, Alloc>& first, const vector<T, Alloc>& second) {
-            return ft:smallerthan(first.begin(), first.end(), second.begin(), rhx.end());
+        bool operator < (const vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+            return ft::smallerthan(first.begin(), first.end(), second.begin(), second.end());
         }
 
     template <class T, class Alloc>
@@ -275,7 +277,7 @@ namespace ft
             return (!(second < first));
         }
     template <class T, class Alloc>
-        bool operator > (cont vector<T, Alloc>& first, const vector<T, Alloc>& second) {
+        bool operator > (const vector<T, Alloc>& first, const vector<T, Alloc>& second) {
             return (second < first);
         }
     template <class T, class Alloc>
