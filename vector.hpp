@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/21 19:37:04 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/22 18:36:36 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <type_traits>
 #include <cmath>
 #include "vector-utils.hpp"
+#include "RandomAccessIterator.hpp"
 
 namespace ft
 {
@@ -254,7 +255,6 @@ namespace ft
                 x = *this;
                 *this = tmp;
             }
-        };
     }; // class vector
     // -----------------------------non-member function overloads-----------------------------
     template <class T, class Alloc>
