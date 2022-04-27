@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/22 18:36:36 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/27 18:43:02 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <cmath>
 #include "vector-utils.hpp"
 #include "RandomAccessIterator.hpp"
+#include "reverseRAI.hpp"
 
 namespace ft
 {
@@ -177,7 +178,7 @@ namespace ft
                     pop_back();
             }
             template <class InputIterator>
-            void    assign(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+            void    assign(InputIterator first, InputIterator last, 
                     typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {
                 clear();
                 if (first != last)  {
