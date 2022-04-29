@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 19:13:09 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/29 18:42:32 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/29 19:56:08 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <sys/time.h>
 #include <string>
 #include <vector>
+#include <stdlib.h> // for system()
 
 typedef ft::vector<int>     ftvec;
 typedef std::vector<int>    stdvec;
@@ -130,7 +131,43 @@ bool constructor_test() {
 }
 
 bool iterators_test() {
-    return 0;
+    int i = 20;
+    ftvec ittest(i, 42);
+    for (int i = 0; i < 20; i++) {
+        ittest.push_back(i * 7);
+    }
+    ftvec::iterator it = ittest.begin();
+    ftvec::iterator ite = ittest.end();
+    ftvec::const_iterator cit = ittest.begin();
+    ftvec::const_iterator cite = ittest.end();
+    ftvec::iterator it5 = it + 5;
+    ftvec::iterator it10 = it + 10;
+	std::cout << "Regular iterators: ";
+    if (it != cit || ite != cite || it == it5 || it == it10 || it5 == it10) {
+        std::cout << "equality error" << std::endl;
+        return 0;
+    }
+    else if (it < cit || ite > cite || it < cit || ite < cite || it >= it5 || it5 <= it || it >= it10 || it5 >= it10) {
+        std::cout << "> / < error" << std::endl;
+        return 0;
+    }
+    i = 0;
+    while (it++ != it5)
+        i++;
+    if (i != 5) {
+        std::cout << "++ error: " << i << " should be 5" << std::endl;
+        return 0;
+    }
+    i = 0;
+    while (it++ != it10)
+        i++;
+    if (i != 10) {
+        std::cout << "++ error: " << i << " should be 5" << std::endl;
+        return 0;
+    } 
+    else
+	    std::cout << "OK" << std::endl;
+    return 1;
 }
 
 bool capacity_test() {
@@ -180,5 +217,6 @@ int main(void) {
         std::cout << "failed on relational operators tests" << std::endl;
     else
         std::cout << "Relational operators tests: OK" << std::endl;
+    system("leaks a.out");
     return 0;
 }

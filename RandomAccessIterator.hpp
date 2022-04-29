@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 20:15:12 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/22 19:40:34 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/29 19:28:31 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ namespace ft {
             typedef ptrdiff_t                                   difference_type;
             typedef Category                                    iterator_category;
             template <class T2, class A>                        friend class vector;
-
-        protected:
             pointer                                             array;
 
         public:
