@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/27 18:43:02 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/04/29 18:31:33 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 #include "RandomAccessIterator.hpp"
 #include "reverseRAI.hpp"
 
-namespace ft
-{
+namespace ft {
+
     template<class T, class Alloc = std::allocator<T> >
     class vector
     {
@@ -56,13 +56,14 @@ namespace ft
             }
 
             explicit vector( size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _size(n), _max_size(n) {
-                this->_array = new value_type[n]();
+                this->_array = new value_type[n];
                 for (size_type i = 0; i < n; i++)
                     this->_array[i] = val;
             }
+            
             template <typename InputIterator>
             vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-                    typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) : _size(0), _alloc(alloc){
+                    typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) : _alloc(alloc), _size(0){
                     
                     InputIterator tmp(first);
                     while (tmp++ != last)
@@ -72,7 +73,7 @@ namespace ft
                     for (int i = 0; first != last; ++first, ++i)
                         this->_array[i] = *first;
             }
-            explicit vector( const vector& x ) : _alloc(x._alloc), _size(0), _max_size(0), _array(0) {
+            vector( const vector& x ) : _alloc(x._alloc), _size(0), _max_size(0), _array(0) {
                 *this = x;
             }
             vector &operator=(const vector & x) {
@@ -80,12 +81,10 @@ namespace ft
                 this->_array = new value_type[x._max_size];
                 this->_max_size = x._max_size;
                 this->_size = 0;
-                assign(x.begin(), x.end());
+                this->assign(x.begin(), x.end());
 			    return *this;
             }
-            ~vector( void )   {
-                delete[] this->_array;
-            }
+            ~vector( void )   { }
     // -----------------------------Iterators-----------------------------
 			iterator	begin(void) {
 				return iterator(this->_array);
@@ -181,35 +180,35 @@ namespace ft
             void    assign(InputIterator first, InputIterator last, 
                     typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {
                 clear();
-                if (first != last)  {
+                while (first != last)  {
                     push_back(*first);
                     ++first;
                 }
             }
-            void    assign(size_type n, const   value_type& val)    {
+            void    assign(size_type n, const   T& val)    {
                 clear();
                 while (n)   {
                     push_back(val);
                     --n;
                 }
             }
-            void    push_back(const value_type& val) {
+            void    push_back(const T& val) {
                 if (this->_size == 0)
                     reserve(1);
                 else
-                    reserve(this->_max_size * 2);
+                    reserve(this->_size * 2);
                 this->_array[this->_size] = val;
                 this->_size++;
             }
             void    pop_back()  {
                 this->_size--;
             }
-                iterator    insert(iterator position, const value_type& val)   {
+                iterator    insert(iterator position, const T& val)   {
                     difference_type index = position - begin();
                     insert (position, 1, val);
                     return iterator(&this->_array[index]);
             }
-            void    insert (iterator position, size_type n, const value_type& val) {
+            void    insert (iterator position, size_type n, const T& val) {
                 vector tmp(position, end());
                     this->_size -= tmp.size();
                 while(n) {
