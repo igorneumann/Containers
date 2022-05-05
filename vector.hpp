@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/29 18:31:33 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/05 20:30:06 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,11 @@ namespace ft {
                 this->assign(x.begin(), x.end());
 			    return *this;
             }
-            ~vector( void )   { }
+            ~vector( void )   { 
+                if (this->_array && this->begin() != this->end())
+                    delete[] this->_array;
+                this->_array = NULL;
+            }
     // -----------------------------Iterators-----------------------------
 			iterator	begin(void) {
 				return iterator(this->_array);
@@ -202,6 +206,10 @@ namespace ft {
             }
             void    pop_back()  {
                 this->_size--;
+                if (!_size) {
+                    delete[] this->_array;
+                    this->_array = this->_alloc.allocate(_max_size);
+                }
             }
                 iterator    insert(iterator position, const T& val)   {
                     difference_type index = position - begin();
@@ -216,9 +224,9 @@ namespace ft {
                         n--;
                 }
                 for (iterator it = tmp.begin(); it != tmp.end(); it++) {
-                        push_back(it);
+                        push_back(*it);
                 }
-                tmp->~vector();
+                tmp.~vector();
             }
             template <class InputIterator>
             void    insert (iterator position, InputIterator first, InputIterator last,
@@ -235,7 +243,7 @@ namespace ft {
                 }
             iterator erase(iterator position) {
                 iterator out(position);
-                while (position != end() - 1)
+                while (position != end()) 
                     *position = *(++position);
                 --this->_size;
                 return out;
@@ -259,7 +267,7 @@ namespace ft {
     // -----------------------------non-member function overloads-----------------------------
     template <class T, class Alloc>
         bool operator == (const vector<T, Alloc>& first, const vector<T,Alloc>& second) {
-            return (first.size() == second.size() && ft::equal(first.begin(), first.end(), second.end()));
+            return (first.size() == second.size() && ft::equal(first.begin(), first.end(), second.begin(), second.end()));
         }
 
     template <class T, class Alloc>

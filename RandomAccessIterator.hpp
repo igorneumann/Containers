@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 20:15:12 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/29 19:28:31 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/03 19:50:55 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,33 +101,33 @@ namespace ft {
             }
 
             template<typename T2, typename P, typename R, class C>
-            friend inline bool operator==(const this_type& lhs, const RandomAccessIterator<T2, P, R, C>& rhs) {
-                return(lhs.array == rhs.array);
+            inline bool operator==(const RandomAccessIterator<T2, P, R, C>& rhs) const {
+                return(this->array == rhs.array);
             }
 
             template<typename T2, typename P, typename R, class C>
-            friend inline bool operator!=(const this_type& lhs, const RandomAccessIterator<T2, P, R, C>& rhs) {
-                return !(lhs.array == rhs.array);
+            inline bool operator!=(const RandomAccessIterator<T2, P, R, C>& rhs) const {
+                return !(this->array == rhs.array);
             }
 
             template<typename T2, typename P, typename R, class C>
-            friend inline bool operator<(const this_type& lhs, const RandomAccessIterator<T2, P, R, C>& rhs) {
-                return (lhs.array < rhs.array);
+            inline bool operator<(const RandomAccessIterator<T2, P, R, C>& rhs) const {
+                return (this->array < rhs.array);
             }
 
             template<typename T2, typename P, typename R, class C>
-            friend inline bool operator>(const this_type& lhs, const RandomAccessIterator<T2, P, R, C>& rhs) {
-                return (lhs.array > rhs.array);
+            inline bool operator>(const RandomAccessIterator<T2, P, R, C>& rhs) const {
+                return (this->array > rhs.array);
             }
 
             template<typename T2, typename P, typename R, class C>
-            friend inline bool  operator<=(const this_type& lhs, const RandomAccessIterator<T2, P, R, C>& rhs) {
-                return !(lhs.array > rhs.array);
+            inline bool  operator<=(const RandomAccessIterator<T2, P, R, C>& rhs) const {
+                return !(this->array > rhs.array);
             }
 
             template<typename T2, typename P, typename R, class C>
-            friend inline bool operator>=(const this_type& lhs, const RandomAccessIterator<T2, P, R, C>& rhs) {
-                return !(lhs.array < rhs.array);
+            inline bool operator>=(const RandomAccessIterator<T2, P, R, C>& rhs) const {
+                return !(this->array < rhs.array);
             }
 
             reference operator[](difference_type n) {

@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 19:18:38 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/21 18:20:06 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/05 20:30:14 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ namespace ft {
             ++first1;
             ++first2;
         }
-        return (first2 != last2);
+        return (first2 == last2);
     }
 
 	template <class Iterator1, class Iterator2>
     bool smallerthan(Iterator1 first1, Iterator1 last1, Iterator2 first2, Iterator2 last2) {
         while (first1 != last1)
         {
-            if (first2 == last2 || *first2 < first1)
+            if (first2 == last2 || *first2 < *first1)
                 return false;
             else if (*first1 < *first2)
                 return true;

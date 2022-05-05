@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 19:13:09 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/29 19:56:08 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/05 20:34:35 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,17 +152,26 @@ bool iterators_test() {
         return 0;
     }
     i = 0;
-    while (it++ != it5)
+    while (it != it5) {
         i++;
+        it++;
+    }
     if (i != 5) {
         std::cout << "++ error: " << i << " should be 5" << std::endl;
         return 0;
     }
-    i = 0;
-    while (it++ != it10)
+    while (it != it10) {
         i++;
+        it++;
+    }
     if (i != 10) {
         std::cout << "++ error: " << i << " should be 5" << std::endl;
+        return 0;
+    } 
+    while (i-- > 0)
+        it--;
+    if (it != cit) {
+        std::cout << "-- error: " << i << " should be equal to constant" << std::endl;
         return 0;
     } 
     else
@@ -170,20 +179,170 @@ bool iterators_test() {
     return 1;
 }
 
+bool reverse_iterators_test() {
+    int i = 20;
+    ftvec ittest(i, 42);
+    for (int i = 0; i < 20; i++) {
+        ittest.push_back(i * 7);
+    }
+    ftvec::reverse_iterator rit = ittest.rbegin();
+    ftvec::reverse_iterator rite = ittest.rend();
+    ftvec::const_reverse_iterator crit = ittest.rbegin();
+    ftvec::const_reverse_iterator crite = ittest.rend();
+    ftvec:: reverse_iterator rit5 = rit + 5;
+    ftvec:: reverse_iterator rit10 = rit + 10;
+    if (rit != crit || rite != crite || rit == rit5 || rit == rit10 || rit5 == rit10) {
+        std::cout << "equality error" << std::endl;
+       return 0;
+    }
+    return 1;
+}
+
 bool capacity_test() {
+    ftvec test;
+    
+    if (!test.empty()){
+        std::cout << "Capacity test error" << std::endl;
+        return 0;
+    }
+    for (int i = 0; i < 20; i++)
+        test.push_back(i * 7);
+    if (test.empty()){
+        std::cout << "Capacity test error" << std::endl;
+        return 0;
+    }
+    if (test.max_size() <= 20){
+        std::cout << "Capacity test error" << std::endl;
+        return 0;
+    }
+    if (test.capacity() <= 20){
+        std::cout << "Capacity test error" << std::endl;
+        return 0;
+    }
+    if (test.size() != 20){
+        std::cout << "Capacity test error" << std::endl;
+        return 0;
+    }
+    test.resize(50);
+    if (test.size() != 50){
+        std::cout << "Resize capacity test error" << std::endl;
     return 0;
+    }
+    test.reserve(150);
+    if (test.capacity() < 150){
+        std::cout << "Reserve capacity test error" << std::endl;
+    return 0;
+    }
+    return 1;
 }
 
 bool element_access_test() {
-    return 0;
+    ftvec elem;
+
+    for (int i = 1; i <= 20; i++)
+        elem.push_back(i * 7);
+    const ftvec celem(elem);
+    for (int i = 19; i > 0; i--) {
+        if (elem[i] != celem[i]) {
+            std::cout << "Constant element access error" << std::endl;      
+            return 0;
+        }
+        else if (elem[i] != ((i + 1) * 7)) {
+            std::cout << "Element access error " << elem.at(i) << "Should be:" << ((i + 1) * 7) << std::endl;      
+            return 0;
+        }
+    }
+    if (elem[0] != elem.front() || elem[19] != elem.back()) {
+            std::cout << "Front/Back access error " << std::endl;      
+            return 0;
+        }
+    for (int i = 19; i > 0; i--) {
+        if (elem.at(i) != celem.at(i)) {
+            std::cout << "Constant element access error" << std::endl;      
+            return 0;
+        }
+        else if (elem.at(i) != ((i + 1) * 7)) {
+            std::cout << "Element access error " << elem.at(i) << "Should be:" << ((i + 1) * 7) << std::endl;      
+            return 0;
+        }
+        try{
+                elem.at(i + 1);
+        }
+        catch (std::out_of_range& e) {
+                std::cout << "Exception threw..." <<  (i + 1) << " is out of range." << std::endl;
+        }
+    }
+    return 1;
 }
 
 bool modifiers_test() {
-    return 0;
+    ftvec modt;
+    ftvec modcpy;
+    int j = 50;
+
+    modt.assign(j, 42);
+    for (int i = 0; i < j; i++)
+        if (modt[i] != 42)
+            std::cout << "assign modifier error" << std::endl;
+    for (int i = 0; i < 20; i++)
+    {
+        modt.push_back(i);
+        if (modt.back() != i) {
+            std::cout << "push_back error" << std::endl;
+            return 0;
+        }
+        j++;
+        if ((modt.size()) != (unsigned long)j) {
+            std::cout << "push_whatever error, J is: " << j << ", Size is: " << modt.size() << std::endl;
+            return 0;
+        }
+    }
+    for (int i = 0; i < 20; i++) {
+        modt.pop_back();
+        j--;
+        if ((modt.size()) != (unsigned long)j) {
+            std::cout << "pop_back error, J is: " << j << ", Size is: " << modt.size() << std::endl;
+        return 0;
+        }
+
+    }
+    modt.insert((modt.begin() + 10), 20, 69);
+    for (int i = 10; i < 20 ; i++)
+        if (modt[i] != 69)
+            std::cout << "Insert error" << std::endl;
+    j += 20;
+    if (modt.size() != (unsigned long)j)
+        std::cout << "Insert size error" << std::endl;
+    for (int i = 0; i < 20; i++, j--)
+        modt.erase(modt.end());
+    if (modt.size() != (unsigned long)j)
+        std::cout << "Erase size error" << std::endl;
+    modt.clear(); 
+    if (!modt.empty())
+        std::cout << "Clear error" << std::endl;
+    modt.assign(2, 42);
+    modcpy.assign(2, 69);
+    modt.swap(modcpy);
+    if (modt[0] != 69 || modcpy[0] != 42)
+        std::cout << "Swap error" << std::endl;
+    return 1;
 }
 
 bool rel_operators_test() {
-    return 0;
+    ftvec rel;
+    ftvec relcpy;
+
+    rel.assign(10, 42);
+    relcpy.assign(10, 42);
+    if (rel != relcpy)
+        std::cout << "Error on relational operator test" << std::endl;
+    relcpy.push_back(5);
+    if (rel == relcpy || rel > relcpy || !(rel < relcpy) || rel >= relcpy)
+        std::cout << "Error on relational operator test" << std::endl;
+    rel.push_back(10);
+    if (rel == relcpy || rel < relcpy || !(rel > relcpy) || rel <= relcpy)
+        std::cout << "Error on relational operator test" << std::endl;
+    return 1;
 }
 
 int main(void) {
@@ -193,30 +352,42 @@ int main(void) {
         std::cout << "failed on constructor tests" << std::endl;
     else
         std::cout << "constructor tests: OK" << std::endl;
+
     if (!stl_test())
         std::cout << "failed on STL tests" << std::endl;
     else
         std::cout << "STL tests: OK" << std::endl;
+
     if (!iterators_test())
         std::cout << "failed on iterators tests" << std::endl;
     else
         std::cout << "iterators tests: OK" << std::endl;
+
+    if (!reverse_iterators_test())
+        std::cout << "failed on reverse iterators tests" << std::endl;
+    else
+        std::cout << "reverse iterators tests: OK" << std::endl;
+
     if (!capacity_test())
         std::cout << "failed on capacity tests" << std::endl;
     else
-        std::cout << "Scapacity tests: OK" << std::endl;
+        std::cout << "Capacity tests: OK" << std::endl;
+
     if (!element_access_test())
         std::cout << "failed on element access tests" << std::endl;
     else
         std::cout << "element access tests: OK" << std::endl;
+
     if (!modifiers_test())
         std::cout << "failed on modifiers tests" << std::endl;
     else
-        std::cout << "modifiers tests: OK" << std::endl;      
+        std::cout << "modifiers tests: OK" << std::endl;
+
     if (!rel_operators_test())
         std::cout << "failed on relational operators tests" << std::endl;
     else
         std::cout << "Relational operators tests: OK" << std::endl;
+
     system("leaks a.out");
     return 0;
 }

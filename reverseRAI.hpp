@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 19:41:31 by ineumann          #+#    #+#             */
-/*   Updated: 2022/04/27 18:40:30 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/03 19:51:43 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,28 +72,33 @@ public:
         return out;
     }
 
-    inline bool operator==(const ReverseBI& x) const    {
-        return (x.base == this->base);
+    template<typename T2>
+    inline bool operator==(const ReverseBI<T2>& rhs)  const  {
+        return (rhs.base() == this->base());
+    }
+    template<typename T2>
+    inline bool operator !=(const ReverseBI<T2>& rhs)  const  {
+        return !(rhs.base() == this->base());
     }
 
-    inline bool operator !=(const ReverseBI& x) const    {
-        return !(x.base == this->base);
+    template<typename T2>
+    inline bool operator<(const ReverseBI<T2>& rhs)  const  {
+        return (rhs.base() > this->base());
     }
 
-    inline bool operator<(const ReverseBI& x) const    {
-        return (x.base > this->base);
+    template<typename T2>
+    inline bool operator>(const ReverseBI<T2>& rhs)  const  {
+        return (rhs.base() < this->base());
     }
 
-    inline bool operator>(const ReverseBI& x) const    {
-        return (x.base < this->base);
+    template<typename T2>
+    inline bool operator<=(const ReverseBI<T2>& rhs)  const  {
+        return !(rhs.base() < this->base());
     }
 
-    inline bool operator<=(const ReverseBI& x) const    {
-        return !(x.base < this->base);
-    }
-
-    inline bool operator>=(const ReverseBI& x) const    {
-        return !(x.base > this->base);
+    template<typename T2>
+    inline bool operator>=(const ReverseBI<T2>& rhs)  const  {
+        return !(rhs.base() > this->base());
     }
 };
 
