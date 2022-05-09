@@ -6,12 +6,12 @@
 #    By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/25 18:37:43 by ineumann          #+#    #+#              #
-#    Updated: 2022/04/28 18:19:47 by ineumann         ###   ########.fr        #
+#    Updated: 2022/05/09 16:44:39 by ineumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	vectors
-SRCS			=	main_vector.cpp vector.cpp
+SRCS			=	vector.cpp stack.cpp #stack_main.cpp main_vector.cpp
 OBJS			=	$(SRCS:.cpp=.o)
 CC				=	@g++ -g -Wall -Wextra -Werror -std=c++98 #-fsanitize=address
 
