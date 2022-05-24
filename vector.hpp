@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/05/05 20:30:06 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/24 20:11:38 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,19 +132,20 @@ namespace ft {
             size_type   capacity() const    {
                 return this->_max_size;
             }
-            size_type   empty() const   {
+            bool   empty() const   {
                 return (!(this->_size));
             }
             void    reserve(size_type n) {
-                if (n <= this->_max_size)
-                    return ;
-                n = std::max(n, this->_max_size * 2);
-                pointer tmp = new value_type[n];
-                for (size_type i = 0; i < this->_size; i++)
-                    tmp[i] = this->_array[i];
-                this->~vector();
-                this->_array = tmp;
-                this->_max_size = n;
+                if (n > this->_max_size) {
+                    n = std::max(n, this->_max_size * 2);
+                    pointer tmp = new value_type[n];
+                    for (size_type i = 0; i < this->_size; i++)
+                        tmp[i] = this->_array[i];
+                    //this->~vector();
+                    delete[] this->_array;
+                    this->_array = tmp;
+                    this->_max_size = n;
+                }
             }
     // -----------------------------Element Access-----------------------------
             reference   operator[](size_type n) {
@@ -196,26 +197,30 @@ namespace ft {
                     --n;
                 }
             }
+            
             void    push_back(const T& val) {
-                if (this->_size == 0)
-                    reserve(1);
+                if (!this->_size) 
+                    reserve(2);
                 else
                     reserve(this->_size * 2);
                 this->_array[this->_size] = val;
                 this->_size++;
             }
+
             void    pop_back()  {
                 this->_size--;
-                if (!_size) {
+                if (_size == 0) {
                     delete[] this->_array;
-                    this->_array = this->_alloc.allocate(_max_size);
+                    this->_array = new value_type[_max_size];
                 }
             }
+
                 iterator    insert(iterator position, const T& val)   {
                     difference_type index = position - begin();
                     insert (position, 1, val);
                     return iterator(&this->_array[index]);
             }
+
             void    insert (iterator position, size_type n, const T& val) {
                 vector tmp(position, end());
                     this->_size -= tmp.size();
@@ -228,6 +233,7 @@ namespace ft {
                 }
                 tmp.~vector();
             }
+            
             template <class InputIterator>
             void    insert (iterator position, InputIterator first, InputIterator last,
                 typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {

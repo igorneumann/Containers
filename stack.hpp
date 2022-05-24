@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:42:54 by ineumann          #+#    #+#             */
-/*   Updated: 2022/05/09 17:22:31 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/24 19:15:08 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ namespace ft {
         explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {
         }
         bool empty() const {
-            return this->c.mepty();
+            return this->c.empty();
         }
         size_type size() const {
             return this->c.size();
         }
-        const value_type& top() {
+        const value_type& top() const {
             return this->c.back();
         }
         void push (const value_type& val) {

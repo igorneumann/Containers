@@ -6,12 +6,13 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 19:13:09 by ineumann          #+#    #+#             */
-/*   Updated: 2022/05/23 19:43:36 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/05/24 18:44:41 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.hpp" 
-#include "main_utils.cpp" 
+#include "main_vector.hpp" 
+#include "main_tests_vector.cpp" 
+#include "main_utils_vector.cpp" 
 
 typedef ft::vector<int>     ftvec;
 typedef std::vector<int>    stdvec;
