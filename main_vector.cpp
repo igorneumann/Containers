@@ -68,6 +68,6 @@ int main(void) {
     else
         std::cout << "Relational operators tests: OK" << std::endl;
 
-    system("leaks a.out");
+ //   system("leaks a.out");
     return 0;
 }

@@ -56,9 +56,9 @@ namespace ft {
             }
 
             explicit vector( size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _size(n), _max_size(n) {
-                this->_array = new value_type[n];
+                this->_array = _alloc.allocate(n);
                 for (size_type i = 0; i < n; i++)
-                    this->_array[i] = val;
+                    _alloc.construct(&this->_array[i], val);
             }
             
             template <typename InputIterator>
@@ -77,8 +77,8 @@ namespace ft {
                 *this = x;
             }
             vector &operator=(const vector & x) {
-                delete[] this->_array;
-                this->_array = new value_type[x._max_size];
+                _alloc.deallocate(_array, _max_size);;
+                this->_array = _alloc.allocate(x._max_size);
                 this->_max_size = x._max_size;
                 this->_size = 0;
                 this->assign(x.begin(), x.end());
@@ -86,7 +86,7 @@ namespace ft {
             }
             ~vector( void )   { 
                 if (this->_array && this->begin() != this->end())
-                    delete[] this->_array;
+                    _alloc.deallocate(this->_array, this->_max_size);
                 this->_array = NULL;
             }
     // -----------------------------Iterators-----------------------------
@@ -138,11 +138,10 @@ namespace ft {
             void    reserve(size_type n) {
                 if (n > this->_max_size) {
                     n = std::max(n, this->_max_size * 2);
-                    pointer tmp = new value_type[n];
+                    pointer tmp = _alloc.allocate(n);
                     for (size_type i = 0; i < this->_size; i++)
-                        tmp[i] = this->_array[i];
-                    //this->~vector();
-                    delete[] this->_array;
+                        _alloc.construct(&(tmp[i]), _array[i]);
+                    this->~vector();
                     this->_array = tmp;
                     this->_max_size = n;
                 }
@@ -210,8 +209,8 @@ namespace ft {
             void    pop_back()  {
                 this->_size--;
                 if (_size == 0) {
-                    delete[] this->_array;
-                    this->_array = new value_type[_max_size];
+                    _alloc.deallocate(_array, _max_size);
+                    this->_array =  _alloc.allocate(_max_size);
                 }
             }
 

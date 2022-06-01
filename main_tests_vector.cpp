@@ -121,6 +121,8 @@ bool reverse_iterators_test(T &ittest) {
 template < typename T>
 bool capacity_test(T &test) {
     
+    while (test.size())
+        test.pop_back();
     if (!test.empty()){
         std::cout << "Capacity test error" << std::endl;
         return 0;
@@ -159,21 +161,27 @@ bool capacity_test(T &test) {
 template < typename T>
 bool element_access_test(T &elem) {
 
-    for (int i = 1; i <= 20; i++)
+    while (elem.size())
+        elem.pop_back();
+    for (int i = 0; i < 20; i++)
         elem.push_back(i * 7);
     const ftvec celem(elem);
-    for (int i = 19; i > 0; i--) {
+    for (int i = 19; i >= 0; i--) {
         if (elem[i] != celem[i]) {
             std::cout << "Constant element access error" << std::endl;      
             return 0;
         }
-        else if (elem[i] != ((i + 1) * 7)) {
-            std::cout << "Element access error " << elem.at(i) << "Should be:" << ((i + 1) * 7) << std::endl;      
+        else if (elem[i] != (i * 7)) {
+            std::cout << "Element access error " << elem.at(i) << " Should be: " << (i * 7) << std::endl;      
             return 0;
         }
     }
-    if (elem[0] != elem.front() || elem[19] != elem.back()) {
-            std::cout << "Front/Back access error " << std::endl;      
+    if (elem[0] != elem.front()) {
+            std::cout << "Front access error " << std::endl;      
+            return 0;
+        }
+    if (elem[19] != elem.back()) {
+            std::cout << "Back access error " << elem[20] << " __ " <<elem.back() <<std::endl;      
             return 0;
         }
     for (int i = 19; i > 0; i--) {
@@ -181,8 +189,8 @@ bool element_access_test(T &elem) {
             std::cout << "Constant element access error" << std::endl;      
             return 0;
         }
-        else if (elem.at(i) != ((i + 1) * 7)) {
-            std::cout << "Element access error " << elem.at(i) << "Should be:" << ((i + 1) * 7) << std::endl;      
+        else if (elem.at(i) != (i * 7)) {
+            std::cout << "Element access error " << elem.at(i) << "Should be:" << (i * 7) << std::endl;      
             return 0;
         }
         try{
