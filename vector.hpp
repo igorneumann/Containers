@@ -198,10 +198,8 @@ namespace ft {
             }
             
             void    push_back(const T& val) {
-                if (!_size) 
-                    reserve(2);
-                else if ((_size + 1) > _max_size)
-                    reserve(_size * 2);
+                if ((_size + 1) > _max_size)
+                    reserve(_size + 1);
                 _array[_size] = val;
                 _size++;
             }
