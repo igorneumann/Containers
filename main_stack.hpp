@@ -29,9 +29,15 @@ template < typename T, typename T2 >
 bool is_equal(T &cnt, T2 &cpy, std::string str);
 
 template < typename T, typename T2 >
-bool stl_test(T &ftv, T2 &stdv);
-
-template < typename T, typename T2 >
 bool constructor_test(T &cnt, T2 &cpy, T &fill, T2 &fillcpy);
+
+template < typename T>
+bool element_access_test(T &elem);
+
+template < typename T>
+bool rel_operators_test(T rel);
+
+template < typename T>
+bool modifiers_test(T &modt);
 
 #endif

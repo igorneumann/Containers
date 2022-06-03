@@ -29,8 +29,23 @@ int main(void) {
     if (!constructor_test(ftstk, stdstk, ftstk2, stdstk2))
         std::cout << "failed on constructor tests" << std::endl;
     else
-        std::cout << "constructor tests: OK" << std::endl;
-
+        std::cout << "constructor tests: OK" << std::endl;\
+    if (!capacity_test(ftstk))
+        std::cout << "failed on capacity tests" << std::endl;
+    else
+        std::cout << "Capacity tests: OK" << std::endl;
+    if (!element_access_test(ftstk))
+        std::cout << "failed on element access tests" << std::endl;
+    else
+        std::cout << "element access tests: OK" << std::endl;
+    if (!rel_operators_test(ftstk))
+        std::cout << "failed on relational operators tests" << std::endl;
+    else
+        std::cout << "Relational operators tests: OK" << std::endl;
+    if (!modifiers_test(ftstk))
+        std::cout << "failed on modifiers tests" << std::endl;
+    else
+        std::cout << "modifiers tests: OK" << std::endl;
     system("leaks a.out");
     return 0;
 }

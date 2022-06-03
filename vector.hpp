@@ -69,7 +69,7 @@ namespace ft {
                     while (tmp++ != last)
                         this->_size++;
                     this->_max_size = this->_size;
-                    this->_array = this->_alloc.allocate(this->_max_size);
+                    this->_array = _alloc.allocate(_max_size);
                     for (int i = 0; first != last; ++first, ++i)
                         this->_array[i] = *first;
             }
@@ -78,7 +78,6 @@ namespace ft {
             }
 
             vector &operator=(const vector & src) {
-                this->reserve(src._size);
                 this->assign(src.begin(), src.end());
 			    return *this;
             }
