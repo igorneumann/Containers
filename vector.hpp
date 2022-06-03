@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
+/*   By: igorneumann <igorneumann@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/05/24 20:11:38 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/06/03 11:46:28 by igorneumann      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <string>
 #include <iterator>
 #include <stdexcept>
-#include <type_traits>
 #include <cmath>
+#include "type_traits.hpp"
 #include "vector-utils.hpp"
 #include "RandomAccessIterator.hpp"
 #include "reverseRAI.hpp"
@@ -63,7 +63,7 @@ namespace ft {
             
             template <typename InputIterator>
             vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-                    typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) : _alloc(alloc), _size(0){
+                    typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0) : _alloc(alloc), _size(0){
                     
                     InputIterator tmp(first);
                     while (tmp++ != last)
@@ -76,17 +76,19 @@ namespace ft {
             vector( const vector& x ) : _alloc(x._alloc), _size(0), _max_size(0), _array(0) {
                 *this = x;
             }
-            vector &operator=(const vector & x) {
+
+            vector &operator=(const vector & src) {
                 _alloc.deallocate(_array, _max_size);;
-                this->_array = _alloc.allocate(x._max_size);
-                this->_max_size = x._max_size;
+                this->_array = _alloc.allocate(src._max_size);
+                this->_max_size = src._max_size;
                 this->_size = 0;
-                this->assign(x.begin(), x.end());
+                //this->reserve(src._size);
+                this->assign(src.begin(), src.end());
 			    return *this;
             }
             ~vector( void )   { 
-                if (this->_array && this->begin() != this->end())
-                    _alloc.deallocate(this->_array, this->_max_size);
+                if (_array != NULL)
+                    _alloc.deallocate(this->_array, _max_size);
                 this->_array = NULL;
             }
     // -----------------------------Iterators-----------------------------
@@ -136,7 +138,9 @@ namespace ft {
                 return (!(this->_size));
             }
             void    reserve(size_type n) {
-                if (n > this->_max_size) {
+                if (!_max_size)
+                    _max_size++;
+                if (n >= this->_max_size) {
                     n = std::max(n, this->_max_size * 2);
                     pointer tmp = _alloc.allocate(n);
                     for (size_type i = 0; i < this->_size; i++)
@@ -182,7 +186,7 @@ namespace ft {
             }
             template <class InputIterator>
             void    assign(InputIterator first, InputIterator last, 
-                    typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {
+                    typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0) {
                 clear();
                 while (first != last)  {
                     push_back(*first);
@@ -206,10 +210,6 @@ namespace ft {
 
             void    pop_back()  {
                 this->_size--;
-                if (_size == 0) {
-                    _alloc.deallocate(_array, _max_size);
-                    this->_array =  _alloc.allocate(_max_size);
-                }
             }
 
                 iterator    insert(iterator position, const T& val)   {
@@ -233,7 +233,7 @@ namespace ft {
             
             template <class InputIterator>
             void    insert (iterator position, InputIterator first, InputIterator last,
-                typename std::enable_if<!std::is_integral<InputIterator>::value >::type* = 0) {
+                typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0) {
                 vector tmp(position, end());
                 this->_size -= tmp.size();
                 while (first != last) {
