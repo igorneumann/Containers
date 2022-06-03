@@ -6,7 +6,7 @@
 /*   By: igorneumann <igorneumann@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 17:40:48 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/03 11:35:58 by igorneumann      ###   ########.fr       */
+/*   Updated: 2022/06/03 11:46:28 by igorneumann      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,9 +201,11 @@ namespace ft {
                 }
             }
             
-            void    push_back(const value_type& val) {
-                if ((_size + 1) > _max_size)
-                    reserve(this->_size + 1);
+            void    push_back(const T& val) {
+                if (!_size) 
+                    reserve(2);
+                else if ((_size + 1) > _max_size)
+                    reserve(_size * 2);
                 _array[_size] = val;
                 _size++;
             }
