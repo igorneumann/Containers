@@ -17,7 +17,7 @@ STACK			=	main_utils_stack.cpp main_tests_stack.cpp main_stack.cpp
 VECTOR			=	main_vector.cpp main_tests_vector.cpp main_utils_vector.cpp 
 OBJS			=	$(SRCS:.cpp=.o)
 CXX 			= 	clang++
-CXXFLAGS		=	-g -Wall -Wextra -Werror -std=c++98 -fsanitize=address
+CXXFLAGS		=	-g -Wall -Wextra -Werror -std=c++98 #-fsanitize=address
 
 all: $(NAME)
 

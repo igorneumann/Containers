@@ -78,16 +78,12 @@ namespace ft {
             }
 
             vector &operator=(const vector & src) {
-                _alloc.deallocate(_array, _max_size);;
-                this->_array = _alloc.allocate(src._max_size);
-                this->_max_size = src._max_size;
-                this->_size = 0;
-                //this->reserve(src._size);
+                this->reserve(src._size);
                 this->assign(src.begin(), src.end());
 			    return *this;
             }
             ~vector( void )   { 
-                if (_array != NULL)
+                if (_max_size)
                     _alloc.deallocate(this->_array, _max_size);
                 this->_array = NULL;
             }
@@ -138,14 +134,13 @@ namespace ft {
                 return (!(this->_size));
             }
             void    reserve(size_type n) {
-                if (!_max_size)
-                    _max_size++;
-                if (n >= this->_max_size) {
+                if (n > this->_max_size) {
                     n = std::max(n, this->_max_size * 2);
                     pointer tmp = _alloc.allocate(n);
                     for (size_type i = 0; i < this->_size; i++)
                         _alloc.construct(&(tmp[i]), _array[i]);
-                    this->~vector();
+                    if (_max_size)
+                        _alloc.deallocate(this->_array, _max_size);
                     this->_array = tmp;
                     this->_max_size = n;
                 }
