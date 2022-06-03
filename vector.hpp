@@ -197,11 +197,13 @@ namespace ft {
                 }
             }
             
-            void    push_back(const value_type& val) {
-                this->_size++;
-                if (_size > _max_size)
-                    reserve(this->_size);
-                _alloc.construct(&this->_array[_size - 1], val);
+            void    push_back(const T& val) {
+                if (!_size) 
+                    reserve(2);
+                else if ((_size + 1) > _max_size)
+                    reserve(_size * 2);
+                _array[_size] = val;
+                _size++;
             }
 
             void    pop_back()  {
