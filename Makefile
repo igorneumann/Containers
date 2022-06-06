@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: igorneumann <igorneumann@student.42.fr>    +#+  +:+       +#+         #
+#    By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/25 18:37:43 by ineumann          #+#    #+#              #
-#    Updated: 2022/06/02 14:49:49 by igorneumann      ###   ########.fr        #
+#    Updated: 2022/06/06 16:56:22 by ineumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	vectors
-SRCS			=	vector.cpp stack.cpp
+SRCS			=	vector.cpp stack.cpp map.cpp
 MAIN			=	main.cpp
 STACK			=	main_utils_stack.cpp main_tests_stack.cpp main_stack.cpp 
 VECTOR			=	main_vector.cpp main_tests_vector.cpp main_utils_vector.cpp 
