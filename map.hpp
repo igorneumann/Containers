@@ -6,7 +6,7 @@
 /*   By: igorneumann <igorneumann@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 16:53:42 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/07 12:40:41 by igorneumann      ###   ########.fr       */
+/*   Updated: 2022/06/07 13:25:34 by igorneumann      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ namespace ft
 *   @param Alloc    Object used to manage the vector' storage.
 */
 
-template < class key, class T, class Compare = ft::less<key>, 
-    class Alloc = ft::allocatos<ft::pair<cont key, T>>>
+template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::allocator<ft::pair<const key, T> > >
     class map
     {
         private:
@@ -199,8 +198,117 @@ template < class key, class T, class Compare = ft::less<key>,
         }
 
         /*----------------------MODIFIERS-------------------*/
-
+        /* Inserts one element if the key didn't already exist in map. Increases 
+           the size by one if the element was inserted.
         
+           @param val  The pair<key, mapped value> to insert.
+           @return     Return a pair with an iterator pointing to the newly element 
+                       inserted if the key wasn't existing in map, otherwise an iterator 
+                       to the key already present; and a boolean : true if the element 
+                       was inserted, false if already  existing.*/
+
+        ft::pair<iterator, bool> insert (const value_type& val)
+        {
+            // Searches if val's key is already present and returns an iterator to the key if it's the case
+            Node* elemIsPresent = searchNode(_root, val.first);
+            if (elemIsPresent)
+                return ft::pair<iterator, bool>(iterator(elemIsPresent, _lastElem, _comp), false);
+            ++_size;
+            return ft::pair<iterator, bool>(iterator(insertNode(_root, val), _lastElem, _comp), true);
+        }
+
+        /*  Inserts one element if the key didn't already exist in map, starting from a certain position*/
+        iterator insert (iterator position, const calue_type& val)
+        {
+            // If position key is higher than val, we need to decrease position 
+            // until we find the closest highest key from val in the tree
+            if (position->first > val.first)
+            {
+                iterator prev(position);
+                --prev;
+                while (prev != end() && prev->first >= val.first)
+                {
+                    --position;
+                    --next;
+                }
+            }
+
+            //Opposite case
+            else if (position->first < val.first)
+            {
+                iterator next(position);
+                ++next;
+                while (next != end() && next->first <= val.first)
+                {
+                    ++position;
+                    ++next;
+                }
+            }
+
+            // If the value already exist, and the tree isn't empty
+            if (position != end() && val.first == position->first)
+                return position;
+            
+            ++size;
+            return iterator(insertNode(position.getNode(), val), _lastElem, _comp);
+        }
+        /* Inserts all elements between first and last (if they're not already existing), 
+           and increases the map' size.
+        
+           @param first    An iterator pointing to the range's beginning (will be include).
+           @param last     An iterator pointing to the range's end (will not be include).*/
+        template <class InputIterator>
+        void insert (InputIterator first, InputIterator last,
+                    typename ft::enable_if<!is_integral<InputIterator>::value>::type* = 0)
+        {
+            while (first != last)
+                insert(*first++);
+        }
+
+        // Remove element at the @param position
+
+        size_type erase(iterator position)
+        {
+            deleteNode(position.getNode(), position->first);
+            --_size;
+        }
+
+        //remove element that matches @param k and @return 1 (erased) or 0 (not erased)
+        size_type erase (const key_type& k)
+        {
+            size_type ret = deleteNode(_root, k);
+            _size -= ret;
+            return ret;
+        }
+
+        //remove all elements from @param first iterator up to @param last iterator
+        void erase(iterator first, iterator last)
+        {
+            while (first != last)
+            {
+                iterator tmp(first);
+                ++first;
+                erase(tmp);
+            }
+        }
+
+        //swap @param map with the contents of this one
+        void swap (map& x)
+        {
+            swap(_root, x._root);
+            swap(_lastElem, x._lastelem);
+            sweap(_size, x._size);
+            swap(_comp, x._comp);
+            swap(_allocPair, x._allocPair);
+            swap(_allocNode, x._allocNode);
+        }
+
+        //nuke everything inside the container
+        void clear()    {
+            erase(begin(), end());
+        }
+
+        /*----------------------------OBSERVERS------------------------------------*/
     };
 }
 
