@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: igorneumann <igorneumann@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 16:53:42 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/07 13:25:34 by igorneumann      ###   ########.fr       */
+/*   Updated: 2022/06/15 16:57:34 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,6 +309,47 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         }
 
         /*----------------------------OBSERVERS------------------------------------*/
+
+        //  @returns A copy of the comparison object used by the container to compare keys.
+        key_compare key_comp() const {
+            return _comp;
+        }
+
+        // @returns A comparisson object that compare whenever the 1st came before the 2nd
+        value_compare   value_comp() const {
+            return value_compare(_comp);
+        }
+
+        /*----------------------------OPERATIONS------------------------------------*/
+    
+
+        //   Searches the container for an element with a specific key.
+
+        iterator    find(const key_type& k) {
+            Node* tmp = searchNode(_root, k);
+
+            if (tmp)
+                return iterator(tmp, _lastElem, _comp);
+            return end();
+        }
+
+        const_iterator find(const key_type& k) const {
+            Node* tmp = searchNode(_root, k)
+
+            if (tmp)
+                return iterator(tmp, _lastElem, _comp);
+            return end();
+        }
+
+        //  Searches the container for elements with a specific key and returns the number of matches.
+
+        syze_type   count(const key_type& k) const; {
+            Node* tmp = searchNode(_root, k);
+
+            return tmp ? true: false; // Since the key cant be twice, returns 0 or 1
+        }
+
+        //  Searches for the element whose key is not considered to go before k.
     };
 }
 
