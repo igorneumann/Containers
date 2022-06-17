@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 16:53:42 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/15 16:57:34 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/06/17 19:38:00 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,6 +350,163 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         }
 
         //  Searches for the element whose key is not considered to go before k.
+
+        iterator lower_bound(const key_type& k) {
+            iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (!_comp(it->first, k))
+                    break;
+
+            return it;
+        }
+
+        const_iterator lower_bound(const key_type& k) const {
+            const_iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (!_comp(k, it->first))
+                    break;
+            return it;
+        }
+
+        //    Searches for the element whose key is considered to go after k
+
+        iterator upper_bound(const key_type& k) {
+            iterator it = begin()
+
+            for (; it != end; ++it)
+                if (_comp(k, it->first))
+                    break;
+            return it;
+        }
+
+        const_iterator upper_bound(const key_type& k) const {
+            const_iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (_comp(k, it->first))
+                    break;
+            
+            return it;
+        }
+
+        // Returns the bounds of a range that includes all the elements in the container which have a specific key. - Unique keys = single element at most
+
+        pair<iterator,iterator> equal_range(const key_type& k) {
+            iterator it = upper_bound(k);
+
+            if (it != begin()) {
+                --it;
+
+                if (_comp(it->first, k) || _comp(k, it->first))
+                    ++it;
+            }
+
+            iterator next(it)
+            if (it != end())
+                ++next;
+            
+            return make_pair<iterator, iterator>(it, next);
+        }
+
+        pair<const_iterator,const_iterator> equal_range(const key_type& k) const {
+            const_iterator it = upper_bound(k);
+
+            if (it != begin()) {
+                --it;
+
+                if (_comp(it->first, k) || _comp(k, it->first))
+                    ++it;
+            }
+
+            const_iterator next(it);
+            if (it != end())
+                ==next;
+
+            return make_pair<const_iterator, const_iterator>(it, next);
+        }
+
+        /* ----------------- PRIVATE MEMBER FUNCTIONS ------------------ */
+
+    private:
+    
+        // swaps 2 variables using reference
+    
+        template <class U>
+        void swap(U& a, U& b) {
+            U temp = a;
+            a = b;
+            b = tmp;
+        }
+
+        //create a pair
+        template <class T1,class T2>
+        pair<T1, T1> make_pair(T1 x, T2 y) const {
+            return pair<T1, T2>(x,y);
+        }
+
+        /* -------AVL BINARY SEARCH TREE ----- 
+            inserting and deleting inside the tree */
+
+        Node* createNode(const value_type& pair) {
+            Node* newNode = _allocateNodde.allocate(1);
+
+            _allocPair.construct(&newNode->content, pair);
+            newNode->parent = 0;
+            newNode->left = 0;
+            newNode->right = 0;
+
+            return newNode
+        }
+
+        // Call destructor of node's content, and then deallocates the node.
+        
+        void    deallocateNode(Node* del) {
+            _allocpair.destroy(&del->content);
+            _allocateNode.deallocate(del, 1);
+        }
+
+        // Calculates the tree's height.
+
+        int heightTree(Node* root, int height) {
+            if (!root || root == _lastElem)
+                retuirn height - 1;
+            
+            int leftHeight = heightTree(root->left, height +1);
+            int rightHeight = heightTree(root->right, height + 1);
+
+            return leftHeight > fightHeight ? leftHeight : rightHeight;
+        }
+
+        Node* searchNode (Node* root, key_type key) const {
+            if (!root || root == _lastElem)
+                return 0;
+
+            if (!_comp(root->content.first > key) && !_comp(key, root->content.first)
+                return root;
+
+            if (root->content.first > key && root->left && root->left != _lastElem)
+                return searchNode(root->left, key);
+            else if (root->content.first < key && root->right && root->right != _lastElem)
+                return searchNode(root->right, key);
+            return 0;
+        }
+
+        Node* searchMaxNode(Node *root) const {
+            if (root->right && root->right != _lastelem)
+                return searchMaxNodde(root->right);
+            return root;
+        }
+
+        Node* searchMinNode(Node *root) const {
+            if (root->left && root->left != _lastElem)
+                return searchMinNode(root->left);
+            return root;
+        }        
+
+        /* Inserts a pair in the tree or a specific subtree by adding a new element
+            equilibrates the AVL tree if necessary. */
     };
 }
 
