@@ -6,11 +6,11 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 17:09:07 by ineumann          #+#    #+#             */
-/*   Updated: 2022/05/24 17:51:54 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/06/20 19:04:40 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main_stack.hpp" 
+#include "../headers/main_stack.hpp" 
 
 typedef ft::stack<int>      ftst;
 typedef std::stack<int>     stdst;
