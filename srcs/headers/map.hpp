@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 16:53:42 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/20 17:50:59 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/06/29 18:54:10 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <functional>
 #include <cmath>
+#include "map_iterator.hpp"
+#include "rev_map_iterator.hpp"
 
 namespace ft 
 {
@@ -27,30 +29,15 @@ namespace ft
 template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::allocator<ft::pair<const key, T> > >
     class map
     {
-        private:
-            Node*                       _root; //1st element of a tree
-            Node*                       _lastElem; //last element
-            size_type                   _size; // # of values inside
-            allocator_type              _allocPair;     //copy of allocator type object
-            key_compare                 _comp;  // Copy of comp key compare predicate
-            ft::alocator<Node>          _allocNode;  //Nodde's allocator
-            struct Node
-            {
-                ft::pair<const key, T>  content;
-                Node*                   parent;
-                Node*                   left;
-                Node*                   right;
-            };
-
         public:
-            typedef Key                                     key_type;
+            typedef key                                     key_type;
             typedef Compare                                 key_compare;
             typedef Alloc                                   allocator_type;
             typedef T                                       mapped_type;
 
             typedef ft::pair<const key_type, mapped_type>   value_type;
             typedef long int                                difference_type;
-            typedef syze_t                                  size_type;
+            typedef size_t                                  size_type;
 
             typedef T&                                     reference;
             typedef const T&                               const_reference;
@@ -62,9 +49,26 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
 
             typedef typename ft::rev_map_iterator<Key, T, Compare, Node, false> reverse_iterator;
             typedef typename ft::rev_map_iterator<Key, T, Compare, Node, true>  const_rev_iterator;
+
+        private:
+            Node*                       _root; //1st element of a tree
+            Node*                       _lastElem; //last element
+            size_type                   _size; // # of values inside
+            allocator_type              _allocPair;     //copy of allocator type object
+            key_compare                 _comp;  // Copy of comp key compare predicate
+            ft::allocator<Node>          _allocNode;  //Nodde's allocator
+            struct Node
+            {
+                ft::pair<const key, T>  content;
+                Node*                   parent;
+                Node*                   left;
+                Node*                   right;
+            };
+
             /**
             *   Comparison object using map's key_compare. It can be return with the value_comp method.
             */
+           public:
         
             class value_compare
             {
