@@ -6,12 +6,13 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 18:14:47 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/29 19:33:28 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/06/30 19:27:11 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REV_MAP_ITERATOR_HPP
 #define REV_MAP_ITERATOR_HPP
+#include "stdutils.hpp"
 
 namespace ft
 {
@@ -54,7 +55,7 @@ namespace ft
 
         //Default Constructor
 
-        rev_map_iterator(nodePtr node = 0, nodePtr lasElem = 0, const key_compare& comp = key_compare()) :
+        rev_map_iterator(nodePtr node = 0, nodePtr lastElem = 0, const key_compare& comp = key_compare()) :
             _node(node), _lastElem(lastElem), _comp(comp) {}
 
         //Copy constructor
@@ -94,15 +95,15 @@ namespace ft
 
         //---------------------------------- GETTERS ---------------------------------
 
-        NodePtr getNonConstNode() const {
+        nodePtr getNonConstNode() const {
             return _node;
         }
 
-        NodePtr getNonConstLastElem() const {
+        nodePtr getNonConstLastElem() const {
             return _lastElem;
         }
 
-        NodePtr getCompare() const {
+        nodePtr getCompare() const {
             return _comp;
         }
 
@@ -116,6 +117,11 @@ namespace ft
             return (&_node->constent);
         }
 
+        //      _comp is equivalent to operator <. So:
+        //      - operator>(lhs, rhs)  <==>  _comp(rhs, lhs)
+        //      - operator<=(lhs, rhs)  <==>  !_comp(rhs, lhs)
+        //      - operator>=(lhs, rhs)  <==>  !_comp(lhs, rhs)
+        
         rev_map_iterator& operator++()
         {
             nodePtr previousNode = _node;
@@ -129,7 +135,7 @@ namespace ft
                 if (_node->left && (_node->left == _lastElem || _comp(_node->left->content.first, previousNode->conent.first))) {
                     _node = _node->left;
 
-                    Node* tmp = 0
+                    Node* tmp = 0;
                     if (_node != _lastElem && (tmp = searchMaxNode(_node)))
                         _node = tmp;
                 }
@@ -138,6 +144,99 @@ namespace ft
             }
             return (*this);
         }
+
+        rev_map_iterator operator++(int)
+        {
+            rev_map_iterator res(*this);
+
+            if (_node == _lastElem) {
+                _node = _lastElem->left;
+                return (res);
+            }
+
+            while (_node != _lastElem && !_comp(_node->content.first, res->first)) {
+                if (_node->left && (_node->left == _lastElem || _comp(_node->left->content.first, res->first)))
+                {
+                    _node = _node->left;
+                    
+                    Node* tmp = 0;
+                    if (_node != _lastElem && (tmp = searchMaxNode(_node)))
+                        _node = tmp;
+                }
+                else
+                    _node = _node->parent;
+            }
+
+            return (res);
+        }
+
+        rev_map_iterator& operator--()
+        {
+            nodePtr previousNode = _node;
+
+            if (_node == _lastElem) {
+                _node = _lastElem->right;
+                return(*this);
+            }
+            while (_node != _lastElem && !_comp(previous->content.first, _node->content.first)) {
+                if (_node->right && (_node->right == _lastElem || _comp(previousNode->content.first, _node->right->content.first))) {
+                    _node = _node->right;
+
+                    Node* tmp = 0;
+                    if (_node != _lastElem && (tmp = searchMinNode(_node)))
+                        _node = tmp;
+                }
+                else
+                    _node = _node->parent;
+            }
+            return (*this);
+        }
+
+        rev_map_iterator operator--(int) {
+            rev_map_iterator res(*this);
+
+            if (_node == _lastElem) {
+                _node = _lastElem->right;
+                return (res);
+            }
+
+            while (_node != _lastElem && !_comp(res->first, _node->content.first)) {
+                if (_node->right && (_node->right == _lastElem || _comp(res->first, _node->right->content.first))) {
+                    _node = _node->right;
+
+                    Node* tmp = 0;
+                    if (_node != _lastElem && (tmp = searchMinNodde(_node)))
+                        _node = tmp;
+                }
+                else    _node = _node->parent;
+            }
+            return (res);
+        }
+
+        bool operator==(const rev_map_iterator& it) const   {
+            return (it._node == _node);
+        }
+
+        bool operator!=(const rev_map_iterator& it) const {
+            return (it._node != _node);
+        }
+
+        //------------------------------- PRIVATE MEMBER FUNCTIONS ----------------------------------
+
+        private:
+
+        Node* searchMaxNode(Node *root) {
+            if (root && root != _lastElem && root->right ** root->right != _lastElem)
+                return searchMaxNode(root->right);
+            return root;
+        }
+
+        Node* searchMinNode(Node *root) {
+            if (root && root != _lastElem && root->left && root->left != _lastElem)
+                return searcvhMinNode(root->left);
+            return root;
+        }
+
     };
 }
 
