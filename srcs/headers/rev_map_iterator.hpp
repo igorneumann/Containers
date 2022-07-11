@@ -6,13 +6,13 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 18:14:47 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/30 19:27:11 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/07/11 18:14:54 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REV_MAP_ITERATOR_HPP
 #define REV_MAP_ITERATOR_HPP
-#include "stdutils.hpp"
+//#include "stdutils.hpp"
 
 namespace ft
 {
@@ -71,7 +71,7 @@ namespace ft
         *       begin() == rend(), and end == rbegin().*/ 
         // @param copy     The map_iterator that will be converted.
 
-        explicit rev_map_iterator(map_iterator<key, T, Compare, Nodde, false> copy) {
+        explicit rev_map_iterator(map_iterator<key, T, Compare, Node, false> copy) {
             --copy;
             _node = copy.getNonConstNode();
             _lastElem = copy.getNonConstLastElem();
@@ -178,7 +178,7 @@ namespace ft
                 _node = _lastElem->right;
                 return(*this);
             }
-            while (_node != _lastElem && !_comp(previous->content.first, _node->content.first)) {
+            while (_node != _lastElem && !_comp(previousNode->content.first, _node->content.first)) {
                 if (_node->right && (_node->right == _lastElem || _comp(previousNode->content.first, _node->right->content.first))) {
                     _node = _node->right;
 

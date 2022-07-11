@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 17:56:08 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/20 19:04:43 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/07/11 17:48:05 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ bool element_access_test(T &elem) {
                 elem.at(i + 1);
         }
         catch (std::out_of_range& e) {
-                std::cout << "Exception threw..." <<  (i + 1) << " is out of range." << std::endl;
+                std::cerr << "Exception threw..." <<  (i + 1) << " is out of range." << std::endl;
         }
     }
     return 1;

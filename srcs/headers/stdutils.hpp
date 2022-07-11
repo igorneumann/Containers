@@ -6,12 +6,14 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 17:51:16 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/30 19:25:15 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/07/11 17:50:00 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STDUTILS_HPP
-#define STTDUUTILS_hpp
+#define STDUTILS_HPP
+
+#include <iostream>
 
 namespace ft {
     //----------------------------------- PAIR --------------------------------
@@ -87,7 +89,7 @@ namespace ft {
             size_t size = n * sizeof(value_type);
 
             try {
-                ret = reinterpret_cast<pointer>(::operator new(size))
+                ret = reinterpret_cast<pointer>(::operator new(size));
             }
             catch(const std::exception& e)
             {
@@ -114,9 +116,9 @@ namespace ft {
    struct less {
        typedef T        first_argument_type;
        typedef T        second_argument_type;
-       typpedef bool    result_type;
+       typedef bool    result_type;
 
-       bool operator() (const T& x, const T) const {
+       bool operator() (const T& x, const T& y) const {
            return x<y;
        }
    };

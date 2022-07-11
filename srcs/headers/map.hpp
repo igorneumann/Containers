@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 16:53:42 by ineumann          #+#    #+#             */
-/*   Updated: 2022/06/29 18:54:10 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/07/11 18:16:52 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 #include <functional>
 #include <cmath>
+#include "stdutils.hpp"
+#include "chooseconst.hpp"
+#include "type_traits.hpp"
 #include "map_iterator.hpp"
 #include "rev_map_iterator.hpp"
 
@@ -51,19 +54,20 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             typedef typename ft::rev_map_iterator<Key, T, Compare, Node, true>  const_rev_iterator;
 
         private:
-            Node*                       _root; //1st element of a tree
-            Node*                       _lastElem; //last element
-            size_type                   _size; // # of values inside
-            allocator_type              _allocPair;     //copy of allocator type object
-            key_compare                 _comp;  // Copy of comp key compare predicate
-            ft::allocator<Node>          _allocNode;  //Nodde's allocator
-            struct Node
+                    struct Node
             {
                 ft::pair<const key, T>  content;
                 Node*                   parent;
                 Node*                   left;
                 Node*                   right;
             };
+            
+            Node*                       _root; //1st element of a tree
+            Node*                       _lastElem; //last element
+            size_type                   _size; // # of values inside
+            allocator_type              _allocPair;     //copy of allocator type object
+            key_compare                 _comp;  // Copy of comp key compare predicate
+            ft::allocator<Node>          _allocNode;  //Nodde's allocator
 
             /**
             *   Comparison object using map's key_compare. It can be return with the value_comp method.
@@ -111,7 +115,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
                 const allocator_type& alloc = allocator_type(),
                 typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0) : _size(0), _allocPair(alloc), _comp(comp)
         {
-            _lastElem = createNode(FT:pair<const key_type, mapped_type>());
+            _lastElem = createNode(ft::pair<const key_type, mapped_type>());
             _root = _lastElem;
             _lastElem->left = _lastElem;
             _lastElem->right = _lastElem;
@@ -124,7 +128,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
              @param x        The map that will be copied. */
         map(const map& x) : _size(0), _allocPair(x._allocPair), _comp(x._comp), _allocNode(x._allocNode)
         {
-            _lastElem = createNode(FT:pair<const key_type, mapped_type>());
+            _lastElem = createNode(ft::pair<const key_type, mapped_type>());
             _root = _lastElem;
             _lastElem->left = _lastElem;
             _lastElem->right = _lastElem;
@@ -141,7 +145,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         }
 
         /*  Copy operator = calls the copy constructor */
-        map& operator=(cont map & x)
+        map& operator=(const map & x)
         {
             map tmp(x);
             this->swap(tmp);
@@ -159,19 +163,19 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             return iterator(_lastElem, _lastElem, _comp);
         }
         const_iterator end()  {
-            return const_iterator(_lastElem, _LastElem, _comp);
+            return const_iterator(_lastElem, _lastElem, _comp);
         }
         reverse_iterator rbegin()   {
-            return reverse_iterator(_lastElem->left, _lastelem, _comp);
+            return reverse_iterator(_lastElem->left, _lastElem, _comp);
         }
         const_reverse_iterator rbegin()   {
-            return const_reverse_iterator(_lastElem->left, _lastelem, _comp);
+            return const_reverse_iterator(_lastElem->left, _lastElem, _comp);
         }
         reverse_iterator rend() {
             return reverse_iterator(_lastElem, _lastElem, _comp);
         }
         const_reverse_iterator rend()   {
-            return const_reverse_iterator(__lastElem, _lastElem, _comp);
+            return const_reverse_iterator(_lastElem, _lastElem, _comp);
         }
         
         /*-----------------------CAPACITY----------------------*/
@@ -182,7 +186,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             return _size;
         }
         size_type   max_size() const    {
-            return this->_alloc.max_size()
+            return this->_alloc.max_size();
         }
 
         /*----------------------ELEMENT ACCESS-------------------*/
@@ -229,7 +233,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
                 while (prev != end() && prev->first >= val.first)
                 {
                     --position;
-                    --next;
+                    --prev;
                 }
             }
 
@@ -343,7 +347,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
 
         //  Searches the container for elements with a specific key and returns the number of matches.
 
-        syze_type   count(const key_type& k) const; {
+        size_type   count(const key_type& k) const {
             Node* tmp = searchNode(_root, k);
 
             return tmp ? true: false; // Since the key cant be twice, returns 0 or 1
