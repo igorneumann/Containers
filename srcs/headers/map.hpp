@@ -6,7 +6,7 @@
 /*   By: ineumann <ineumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 16:53:42 by ineumann          #+#    #+#             */
-/*   Updated: 2022/07/11 18:16:52 by ineumann         ###   ########.fr       */
+/*   Updated: 2022/07/13 18:14:34 by ineumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,16 @@ namespace ft
 template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::allocator<ft::pair<const key, T> > >
     class map
     {
+
+        private:
+                struct Node
+            {
+                ft::pair<const key, T>  content;
+                Node*                   parent;
+                Node*                   left;
+                Node*                   right;
+            };
+        
         public:
             typedef key                                     key_type;
             typedef Compare                                 key_compare;
@@ -47,20 +57,13 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             typedef T*                                     pointer;
             typedef const T*                               const_pointer;
 
-            typedef typename ft::map_iterator<Key, T, Compare, Node, false> iterator;
-            typedef typename ft::map_iterator<Key, T, Compare, Node, true>  const_iterator;
+            typedef typename ft::map_iterator<key, T, Compare, Node, false> iterator;
+            typedef typename ft::map_iterator<key, T, Compare, Node, true>  const_iterator;
 
-            typedef typename ft::rev_map_iterator<Key, T, Compare, Node, false> reverse_iterator;
-            typedef typename ft::rev_map_iterator<Key, T, Compare, Node, true>  const_rev_iterator;
+            typedef typename ft::rev_map_iterator<key, T, Compare, Node, false> reverse_iterator;
+            typedef typename ft::rev_map_iterator<key, T, Compare, Node, true>  const_rev_iterator;
 
         private:
-                    struct Node
-            {
-                ft::pair<const key, T>  content;
-                Node*                   parent;
-                Node*                   left;
-                Node*                   right;
-            };
             
             Node*                       _root; //1st element of a tree
             Node*                       _lastElem; //last element
@@ -156,25 +159,25 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         iterator begin() {
             return iterator(_lastElem->right, _lastElem, _comp);
         }
-        const_iterator begin() {
+        const_iterator begin() const {
             return const_iterator(_lastElem->right, _lastElem, _comp);
         }
         iterator end()  {
             return iterator(_lastElem, _lastElem, _comp);
         }
-        const_iterator end()  {
+        const_iterator end() const {
             return const_iterator(_lastElem, _lastElem, _comp);
         }
         reverse_iterator rbegin()   {
             return reverse_iterator(_lastElem->left, _lastElem, _comp);
         }
-        const_reverse_iterator rbegin()   {
+        const_rev_iterator rbegin() const {
             return const_reverse_iterator(_lastElem->left, _lastElem, _comp);
         }
         reverse_iterator rend() {
             return reverse_iterator(_lastElem, _lastElem, _comp);
         }
-        const_reverse_iterator rend()   {
+        const_rev_iterator rend() const {
             return const_reverse_iterator(_lastElem, _lastElem, _comp);
         }
         
@@ -190,7 +193,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         }
 
         /*----------------------ELEMENT ACCESS-------------------*/
-        mapped_type& operator(const key_type& k)
+        mapped_type& operator[](const key_type& k)
         {
             Node* tmp = searchNode(_root, k);
 
@@ -253,7 +256,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             if (position != end() && val.first == position->first)
                 return position;
             
-            ++size;
+            ++_size;
             return iterator(insertNode(position.getNode(), val), _lastElem, _comp);
         }
         /* Inserts all elements between first and last (if they're not already existing), 
@@ -338,7 +341,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         }
 
         const_iterator find(const key_type& k) const {
-            Node* tmp = searchNode(_root, k)
+            Node* tmp = searchNode(_root, k);
 
             if (tmp)
                 return iterator(tmp, _lastElem, _comp);
@@ -377,9 +380,9 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         //    Searches for the element whose key is considered to go after k
 
         iterator upper_bound(const key_type& k) {
-            iterator it = begin()
+            iterator it = begin();
 
-            for (; it != end; ++it)
+            for (; it != end(); ++it)
                 if (_comp(k, it->first))
                     break;
             return it;
@@ -407,7 +410,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
                     ++it;
             }
 
-            iterator next(it)
+            iterator next(it);
             if (it != end())
                 ++next;
             
@@ -426,7 +429,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
 
             const_iterator next(it);
             if (it != end())
-                ==next;
+                ++next;
 
             return make_pair<const_iterator, const_iterator>(it, next);
         }
@@ -441,7 +444,7 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
         void swap(U& a, U& b) {
             U temp = a;
             a = b;
-            b = tmp;
+            b = temp;
         }
 
         //create a pair
@@ -454,28 +457,28 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             inserting and deleting inside the tree */
 
         Node* createNode(const value_type& pair) {
-            Node* newNode = _allocateNodde.allocate(1);
+            Node* newNode = _allocNode.allocate(1);
 
             _allocPair.construct(&newNode->content, pair);
             newNode->parent = 0;
             newNode->left = 0;
             newNode->right = 0;
 
-            return newNode
+            return newNode;
         }
 
         // Call destructor of node's content, and then deallocates the node.
         
         void    deallocateNode(Node* del) {
-            _allocpair.destroy(&del->content);
-            _allocateNode.deallocate(del, 1);
+            _allocPair.destroy(&del->content);
+            _allocNode.deallocate(del, 1);
         }
 
         // Calculates the tree's height.
 
         int heightTree(Node* root, int height) {
             if (!root || root == _lastElem)
-                retuirn height - 1;
+                return height - 1;
             
             int leftHeight = heightTree(root->left, height +1);
             int rightHeight = heightTree(root->right, height + 1);
@@ -483,22 +486,22 @@ template < class key, class T, class Compare = ft::less<key>, class Alloc = ft::
             return leftHeight > rightHeight ? leftHeight : rightHeight;
         }
 
-        Node* searchNode (Node* root, key_type key) const {
+        Node* searchNode (Node* root, key_type Key) const {
             if (!root || root == _lastElem)
                 return 0;
 
-            if (!_comp(root->content.first > key) && !_comp(key, root->content.first)
+            if (!_comp(root->content.first > Key) && !_comp(Key, root->content.first))
                 return root;
 
-            if (root->content.first > key && root->left && root->left != _lastElem)
-                return searchNode(root->left, key);
-            else if (root->content.first < key && root->right && root->right != _lastElem)
-                return searchNode(root->right, key);
+            if (root->content.first > Key && root->left && root->left != _lastElem)
+                return searchNode(root->left, Key);
+            else if (root->content.first < Key && root->right && root->right != _lastElem)
+                return searchNode(root->right, Key);
             return 0;
         }
 
         Node* searchMaxNode(Node *root) const {
-            if (root->right && root->right != _lastelem)
+            if (root->right && root->right != _lastElem)
                 return searchMaxNodde(root->right);
             return root;
         }
